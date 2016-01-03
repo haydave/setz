@@ -73,18 +73,21 @@ namespace setZ
                         pt.Position = new Point3d(pt.Position.X, pt.Position.Y, 166);
                         ed.WriteMessage("dbpoint: {0}\n", pt.Position.Z);
                     }
-                    // If it is Arc change the Center Z.
+                    // If it is Ellipse, change the Center Z.
+                    if (obj.GetType().Name == "Ellipse")
+                    {
+                        Ellipse el = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, 156);
+                        ed.WriteMessage("dbpoint: {0}\n", el.Center);
+                    }
+                    // If it is Arc, change the Center Z.
                     //if (obj.GetType().Name == "Arc")
                     //{
                     //    Arc aaaac = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
                     //}
                     ed.WriteMessage("aa: {0}\n", obj.GetType().Name);
                    
-                    // If it is Ellipse, change the Center Z.
-                    //if (obj.GetType().Name == "Ellipse")
-                    //{
-                    //    Ellipse circ = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                    //}
+
                 }
                         
                 tr.Commit();
