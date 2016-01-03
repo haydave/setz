@@ -71,7 +71,7 @@ namespace setZ
                     {
                         DBPoint pt = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
                         pt.Position = new Point3d(pt.Position.X, pt.Position.Y, 166);
-                        ed.WriteMessage("dbpoint: {0}\n", pt.Position.Z);
+                        ed.WriteMessage("dbpoint: {0}\n", pt.Position);
                     }
                     // If it is Ellipse, change the Center Z.
                     if (obj.GetType().Name == "Ellipse")
@@ -81,15 +81,14 @@ namespace setZ
                         ed.WriteMessage("dbpoint: {0}\n", el.Center);
                     }
                     // If it is Arc, change the Center Z.
-                    //if (obj.GetType().Name == "Arc")
-                    //{
-                    //    Arc aaaac = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                    //}
+                    if (obj.GetType().Name == "Arc")
+                    {
+                        Arc ac = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        ac.Center = new Point3d(ac.Center.X, ac.Center.Y, 111);
+                        ed.WriteMessage("dbpoint: {0}\n", ac.Center);
+                    }
                     ed.WriteMessage("aa: {0}\n", obj.GetType().Name);
-                   
-
                 }
-                        
                 tr.Commit();
             }
         }
