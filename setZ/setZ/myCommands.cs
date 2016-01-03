@@ -67,11 +67,12 @@ namespace setZ
                         ed.WriteMessage("circle: {0}\n", circ.Center);
                     }
                     // If it is Point change the Position Z.
-                    //if (obj.GetType().Name == "DBPoint")
-                    //{
-                    //    DBPoint pt = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-
-                    //}
+                    if (obj.GetType().Name == "DBPoint")
+                    {
+                        DBPoint pt = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        pt.Position = new Point3d(pt.Position.X, pt.Position.Y, 166);
+                        ed.WriteMessage("dbpoint: {0}\n", pt.Position.Z);
+                    }
                     // If it is Arc change the Center Z.
                     //if (obj.GetType().Name == "Arc")
                     //{
