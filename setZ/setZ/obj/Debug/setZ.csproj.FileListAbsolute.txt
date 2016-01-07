@@ -1,6 +1,5 @@
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\bin\Debug\setZ.dll
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\bin\Debug\setZ.pdb
-C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.csprojResolveAssemblyReference.cache
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.csproj.ResolveComReference.cache
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.MyCommands.resources
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.csproj.GenerateResource.Cache

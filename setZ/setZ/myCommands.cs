@@ -10,6 +10,7 @@ using Autodesk.AutoCAD.Interop;
 using Autodesk.Civil.DatabaseServices;
 using Autodesk.Civil.ApplicationServices;
 using Autodesk.AutoCAD.Interop.Common;
+using System.Collections.Generic;
 
 // This line is not mandatory, but improves loading performances
 [assembly: CommandClass(typeof(setZ.MyCommands))]
@@ -53,41 +54,161 @@ namespace setZ
                 {
                     Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
                     // If it is Polyline change the elevation.
-                    if (obj.GetType().Name == "Polyline")
-                    {
-                        Polyline pl = (Polyline)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        pl.Elevation = 12;
-                        ed.WriteMessage("polyline: {0}\n", pl.Elevation);
-                    }
-                    // If it is Circle change the Center Z.
-                    if (obj.GetType().Name == "Circle")
-                    {
-                        Circle circ = (Circle)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        circ.Center = new Point3d(circ.Center.X, circ.Center.Y, 15);
-                        ed.WriteMessage("circle: {0}\n", circ.Center);
-                    }
-                    // If it is Point change the Position Z.
-                    if (obj.GetType().Name == "DBPoint")
-                    {
-                        DBPoint pt = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        pt.Position = new Point3d(pt.Position.X, pt.Position.Y, 166);
-                        ed.WriteMessage("dbpoint: {0}\n", pt.Position);
-                    }
-                    // If it is Ellipse, change the Center Z.
-                    if (obj.GetType().Name == "Ellipse")
-                    {
-                        Ellipse el = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        el.Center = new Point3d(el.Center.X, el.Center.Y, 156);
-                        ed.WriteMessage("dbpoint: {0}\n", el.Center);
-                    }
-                    // If it is Arc, change the Center Z.
+                    //if (obj.GetType().Name == "Polyline")
+                    //{
+                    //    Polyline pl = (Polyline)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                    //    pl.Elevation = 12;
+                    //    ed.WriteMessage("polyline: {0}\n", pl.Id);
+                    //}
+                    ////// If it is Circle change the Center Z.
+                    //if (obj.GetType().Name == "Circle")
+                    //{
+                    //    Circle el = (Circle)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                    //    double minDistance = 999999999999999;
+                    //    double distance;
+                    //    double txtValue = 0;
+                    //    // Test MText elements
+                    //    foreach (ObjectId ids in btr)
+                    //    {
+                    //        Autodesk.AutoCAD.DatabaseServices.Entity objs = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(ids, OpenMode.ForRead);
+                    //        if (objs.GetType().Name == "MText")
+                    //        {
+                    //            MText txt = (MText)tr.GetObject(objs.ObjectId, OpenMode.ForRead);
+                    //            distance = Math.Sqrt((txt.Location.X - el.Center.X) * (txt.Location.X - el.Center.X) + (txt.Location.Y - el.Center.Y) * (txt.Location.Y - el.Center.Y));
+                    //            if (minDistance > distance)
+                    //            {
+                    //                try
+                    //                {
+                    //                    txtValue = Convert.ToDouble(txt.Contents);
+                    //                    Console.WriteLine("sadasdasd '{0}' to {1}.", txtValue, distance);
+                    //                    minDistance = distance;
+                    //                    Console.WriteLine("Converted '{0}' to {1}.", txt.Contents, txtValue);
+                    //                }
+                    //                catch (FormatException)
+                    //                {
+                    //                    Console.WriteLine("Unable to convert '{0}' to a Double.", txt.Contents);
+                    //                }
+                    //                catch (OverflowException)
+                    //                {
+                    //                    Console.WriteLine("'{0}' is outside the range of a Double.", txt.Contents);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //    el.Center = new Point3d(el.Center.X, el.Center.Y, txtValue);
+                    //}
+                    //// If it is Point change the Position Z.
+                    //if (obj.GetType().Name == "DBPoint")
+                    //{
+                    //    DBPoint pt = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                    //    double minDistance = 999999999999999;
+                    //    double distance;
+                    //    double txtValue = 0;
+                    //    // Test MText elements
+                    //    foreach (ObjectId ids in btr)
+                    //    {
+                    //        Autodesk.AutoCAD.DatabaseServices.Entity objs = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(ids, OpenMode.ForRead);
+                    //        if (objs.GetType().Name == "MText")
+                    //        {
+                    //            MText txt = (MText)tr.GetObject(objs.ObjectId, OpenMode.ForRead);
+                    //            distance = Math.Sqrt((txt.Location.X - pt.Position.X) * (txt.Location.X - pt.Position.X) + (txt.Location.Y - pt.Position.Y) * (txt.Location.Y - pt.Position.Y));
+                    //            if (minDistance > distance)
+                    //            {
+                    //                try
+                    //                {
+                    //                    txtValue = Convert.ToDouble(txt.Contents);
+                    //                    Console.WriteLine("sadasdasd '{0}' to {1}.", txtValue, distance);
+                    //                    minDistance = distance;
+                    //                    Console.WriteLine("Converted '{0}' to {1}.", txt.Contents, txtValue);
+                    //                }
+                    //                catch (FormatException)
+                    //                {
+                    //                    Console.WriteLine("Unable to convert '{0}' to a Double.", txt.Contents);
+                    //                }
+                    //                catch (OverflowException)
+                    //                {
+                    //                    Console.WriteLine("'{0}' is outside the range of a Double.", txt.Contents);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //    pt.Position = new Point3d(pt.Position.X, pt.Position.Y, txtValue);
+                    //}
+                    //// If it is Ellipse, change the Center Z.
+                    //if (obj.GetType().Name == "Ellipse")
+                    //{
+                    //    Ellipse el = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                    //    double minDistance = 999999999999999;
+                    //    double distance;
+                    //    double txtValue = 0;
+                    //    // Test MText elements
+                    //    foreach (ObjectId ids in btr)
+                    //    {
+                    //        Autodesk.AutoCAD.DatabaseServices.Entity objs = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(ids, OpenMode.ForRead);
+                    //        if (objs.GetType().Name == "MText")
+                    //        {
+                    //            MText txt = (MText)tr.GetObject(objs.ObjectId, OpenMode.ForRead);
+                    //            distance = Math.Sqrt((txt.Location.X - el.Center.X) * (txt.Location.X - el.Center.X) + (txt.Location.Y - el.Center.Y) * (txt.Location.Y - el.Center.Y));
+                    //            if (minDistance > distance)
+                    //            {
+                    //                try
+                    //                {
+                    //                    txtValue = Convert.ToDouble(txt.Contents);
+                    //                    Console.WriteLine("sadasdasd '{0}' to {1}.", txtValue, distance);
+                    //                    minDistance = distance;
+                    //                    Console.WriteLine("Converted '{0}' to {1}.", txt.Contents, txtValue);
+                    //                }
+                    //                catch (FormatException)
+                    //                {
+                    //                    Console.WriteLine("Unable to convert '{0}' to a Double.", txt.Contents);
+                    //                }
+                    //                catch (OverflowException)
+                    //                {
+                    //                    Console.WriteLine("'{0}' is outside the range of a Double.", txt.Contents);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //    el.Center = new Point3d(el.Center.X, el.Center.Y, txtValue);
+                    //}
+                    //// If it is Arc, change the Center Z.
                     if (obj.GetType().Name == "Arc")
                     {
-                        Arc ac = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        ac.Center = new Point3d(ac.Center.X, ac.Center.Y, 111);
-                        ed.WriteMessage("dbpoint: {0}\n", ac.Center);
+                        Arc el = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        double minDistance = 999999999999999;
+                        double distance;
+                        double txtValue = 0;
+                        // Test MText elements
+                        foreach (ObjectId ids in btr)
+                        {
+                            Autodesk.AutoCAD.DatabaseServices.Entity objs = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(ids, OpenMode.ForRead);
+                            if (objs.GetType().Name == "DBText")
+                            {
+                                // MText .Location                                    
+                                DBText txt = (DBText)tr.GetObject(objs.ObjectId, OpenMode.ForRead);
+                                distance = Math.Sqrt((txt.Position.X - el.Center.X) * (txt.Position.X - el.Center.X) + (txt.Position.Y - el.Center.Y) * (txt.Position.Y - el.Center.Y));
+                                if (minDistance > distance)
+                                {
+                                    try
+                                    {
+                                        txtValue = Convert.ToDouble(txt.TextString);
+                                        minDistance = distance;
+                                        ed.WriteMessage("Converted '{0}' to {1}.", txt.TextString, txtValue);
+                                    }
+                                    catch (FormatException)
+                                    {
+                                        ed.WriteMessage("Unable to convert '{0}' to a Double.", txt.TextString);
+                                    }
+                                    catch (OverflowException)
+                                    {
+                                        ed.WriteMessage("'{0}' is outside the range of a Double.", txt.TextString);
+                                    }
+                                }
+                            }
+                        }
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, txtValue);
+                       // ed.WriteMessage("txtValue: {0}\n", txtValue);
                     }
-                    ed.WriteMessage("aa: {0}\n", obj.GetType().Name);
                 }
                 tr.Commit();
             }
@@ -128,6 +249,7 @@ namespace setZ
             // Return a value to the AutoCAD Lisp Interpreter
             return 1;
         }
+
     }
 
 }
