@@ -83,87 +83,62 @@ namespace setZ
                     }
                     listInfo.Add(textInfo.ToArray());
                 }
-        //        = new Lookup<double, List<double>>();
-        //        // Loop through each element (DBText and MText should be skipped)
-        //        foreach (ObjectId id in btr)
-        //        {
-        //            Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
-        //            if (obj.GetType().Name == "DBText" || obj.GetType().Name == "MText")
-        //            {
-        //                continue;
-        //            }
-        //            else if (obj.GetType().Name == "Ellipse")
-        //            {
-        //                Ellipse el = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-        //                el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref textList, el.Center.X, el.Center.Y));
-        //            }
-        //            else if (obj.GetType().Name == "Circle")
-        //            {
-        //                Circle el = (Circle)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-        //                el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref textList, el.Center.X, el.Center.Y));
-        //            }
-        //            else if (obj.GetType().Name == "Arc")
-        //            {
-        //                Arc el = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-        //                el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref textList, el.Center.X, el.Center.Y));
-        //            }
-        //            else if (obj.GetType().Name == "DBPoint")
-        //            {
-        //                DBPoint el = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-        //                el.Position = new Point3d(el.Position.X, el.Position.Y, GetNearText(tr, btr, ref textList, el.Position.X, el.Position.Y));
-        //            }
-        //            else if (obj.GetType().Name == "Polyline")
-        //            {
-        //                Polyline pl = (Polyline)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-        //                pl.Elevation = 12;
-        //            }
-        //        }
-        //        tr.Commit();
+                // Loop through each element (DBText and MText should be skipped)
+                foreach (ObjectId id in btr)
+                {
+                    Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
+                    if (obj.GetType().Name == "DBText" || obj.GetType().Name == "MText")
+                    {
+                        continue;
+                    }
+                    else if (obj.GetType().Name == "Ellipse")
+                    {
+                        Ellipse el = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref listInfo, el.Center.X, el.Center.Y));
+                    }
+                    else if (obj.GetType().Name == "Circle")
+                    {
+                        Circle el = (Circle)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref listInfo, el.Center.X, el.Center.Y));
+                    }
+                    else if (obj.GetType().Name == "Arc")
+                    {
+                        Arc el = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref listInfo, el.Center.X, el.Center.Y));
+                    }
+                    else if (obj.GetType().Name == "DBPoint")
+                    {
+                        DBPoint el = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        el.Position = new Point3d(el.Position.X, el.Position.Y, GetNearText(tr, btr, ref listInfo, el.Position.X, el.Position.Y));
+                    }
+                    else if (obj.GetType().Name == "Polyline")
+                    {
+                        Polyline pl = (Polyline)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        pl.Elevation = 12;
+                    }
+                }
+                tr.Commit();
             }
         }
 
-        //private double GetNearText(Transaction tr, BlockTableRecord btr, ref ArrayList textList, double elX, double elY)
-        //{
-        //    int minI = 0; 
-        //    double minDistance = 999999999;
-        //    double distance = 0;
-        //    double txtValue = 0;
-        //    string text = "";
-        //    for (int i = 0; i < textList.Count; ++i)
-        //    {
-        //        Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject((ObjectId)textList[i], OpenMode.ForRead);
-        //        if (obj.GetType().Name == "DBText")
-        //        {
-        //            DBText txt = (DBText)tr.GetObject(obj.ObjectId, OpenMode.ForRead);
-        //            text = txt.TextString;
-        //            distance = Math.Sqrt((txt.Position.X - elX) * (txt.Position.X - elX) + (txt.Position.Y - elY) * (txt.Position.Y - elY));
-        //        }
-        //        else if (obj.GetType().Name == "MText")
-        //        {
-        //            MText txt = (MText)tr.GetObject(obj.ObjectId, OpenMode.ForRead);
-        //            text = txt.Contents;
-        //            distance = Math.Sqrt((txt.Location.X - elX) * (txt.Location.X - elX) + (txt.Location.Y - elY) * (txt.Location.Y - elY));
-        //        }
-        //        if (minDistance > distance)
-        //        {
-        //            try
-        //            {
-        //                txtValue = Convert.ToDouble(text);
-        //                minDistance = distance;
-        //                minI = i;
-        //            }
-        //            catch (FormatException)
-        //            {
-        //                // ed.WriteMessage("Unable to convert '{0}' to a Double.", text);
-        //            }
-        //            catch (OverflowException)
-        //            {
-        //                // ed.WriteMessage("'{0}' is outside the range of a Double.", text);
-        //            }
-        //        }
-        //    }
-        //    textList.RemoveAt(minI);
-        //    return txtValue;
-        //}
+        private double GetNearText(Transaction tr, BlockTableRecord btr, ref List<double[]> listInfo, double elX, double elY)
+        {
+            int minI = 0; 
+            double minDistance = 999999999;
+            double distance = 0;
+            double txtValue = 0;
+            for (int i = 0; i < listInfo.Count; ++i)
+            {
+                distance = Math.Sqrt((listInfo[i][1] - elX) * (listInfo[i][1] - elX) + (listInfo[i][2] - elY) * (listInfo[i][2] - elY));
+                if (minDistance > distance)
+                {
+                    txtValue = listInfo[i][0];
+                    minDistance = distance;
+                    minI = i;
+                }
+            }
+            listInfo.RemoveAt(minI);
+            return txtValue;
+        }
     }
 }
