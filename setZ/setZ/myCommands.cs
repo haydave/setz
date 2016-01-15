@@ -44,86 +44,93 @@ namespace setZ
 
             using (Transaction tr = Application.DocumentManager.MdiActiveDocument.Database.TransactionManager.StartTransaction())
             {
-                CivilDocument civildoc = Autodesk.Civil.ApplicationServices.CivilApplication.ActiveDocument;
-                ObjectId cirId = ObjectId.Null;
-                Database db = HostApplicationServices.WorkingDatabase;
                 Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
                 // Get the current document and database
                 Document acDoc = Application.DocumentManager.MdiActiveDocument;
                 Database acCurDb = acDoc.Database;
-                BlockTable bt = tr.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-                BlockTableRecord btr = tr.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForRead) as BlockTableRecord;
                 double[] textInfo = new double[3];
                 List<double[]> listInfo = new List<double[]>();
+                List<Autodesk.AutoCAD.DatabaseServices.Entity> targets = new List<Autodesk.AutoCAD.DatabaseServices.Entity>();
                 double txtValue;
-                // Collect DBText and MTexts
-                foreach (ObjectId id in btr)
+               // double i=0;
+                PromptSelectionResult selection = ed.SelectAll();
+                if (selection.Status == PromptStatus.OK)
                 {
-                    Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
-                    if (obj.GetType().Name == "DBText")
+                    foreach (ObjectId id in selection.Value.GetObjectIds())
                     {
-                        DBText txt = (DBText)tr.GetObject(obj.ObjectId, OpenMode.ForRead);
-                        if (double.TryParse(txt.TextString, out txtValue)) {
-                            textInfo[0] = txtValue;
-                            textInfo[1] = txt.Position.X;
-                            textInfo[2] = txt.Position.Y;
-                        }
-                    }
-                    else if (obj.GetType().Name == "MText")
-                    {
-                        MText txt = (MText)tr.GetObject(obj.ObjectId, OpenMode.ForRead);
-                        if (double.TryParse(txt.Contents, out txtValue))
+                        Autodesk.AutoCAD.DatabaseServices.Entity ent = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
+                        LayerTableRecord layer = (LayerTableRecord)tr.GetObject(ent.LayerId, OpenMode.ForRead);
+                        if (!layer.IsFrozen)
                         {
-                            textInfo[0] = txtValue;
-                            textInfo[1] = txt.Location.X;
-                            textInfo[2] = txt.Location.Y;
+                            //i = i + 1;
+                            Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
+                            // Collect DBText and MTexts in listInfo, others in targets 
+                            if (obj.GetType().Name == "DBText")
+                            {
+                                DBText txt = (DBText)tr.GetObject(obj.ObjectId, OpenMode.ForRead);
+                                if (double.TryParse(txt.TextString, out txtValue))
+                                {
+                                    textInfo[0] = txtValue;
+                                    textInfo[1] = txt.Position.X;
+                                    textInfo[2] = txt.Position.Y;
+                                }
+                            }
+                            else if (obj.GetType().Name == "MText")
+                            {
+                                MText txt = (MText)tr.GetObject(obj.ObjectId, OpenMode.ForRead);
+                                if (double.TryParse(txt.Contents, out txtValue))
+                                {
+                                    textInfo[0] = txtValue;
+                                    textInfo[1] = txt.Location.X;
+                                    textInfo[2] = txt.Location.Y;
+                                }
+                            }
+                            else
+                            {
+                                targets.Add(obj);
+                            }
+                            listInfo.Add(textInfo.ToArray());
                         }
-                    } else {
-                        continue;
                     }
-                    listInfo.Add(textInfo.ToArray());
                 }
+                // ed.WriteMessage("\n{0}", i);
                 // Loop through each element (DBText and MText should be skipped)
-                foreach (ObjectId id in btr)
+                foreach (Autodesk.AutoCAD.DatabaseServices.Entity obj in targets)
                 {
-                    Autodesk.AutoCAD.DatabaseServices.Entity obj = (Autodesk.AutoCAD.DatabaseServices.Entity)tr.GetObject(id, OpenMode.ForRead);
-                    if (obj.GetType().Name == "DBText" || obj.GetType().Name == "MText")
-                    {
-                        continue;
-                    }
-                    else if (obj.GetType().Name == "Ellipse")
+                    if (obj.GetType().Name == "Ellipse")
                     {
                         Ellipse el = (Ellipse)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref listInfo, el.Center.X, el.Center.Y));
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(ref listInfo, el.Center.X, el.Center.Y));
                     }
                     else if (obj.GetType().Name == "Circle")
                     {
                         Circle el = (Circle)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref listInfo, el.Center.X, el.Center.Y));
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(ref listInfo, el.Center.X, el.Center.Y));
                     }
                     else if (obj.GetType().Name == "Arc")
                     {
                         Arc el = (Arc)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(tr, btr, ref listInfo, el.Center.X, el.Center.Y));
+                        el.Center = new Point3d(el.Center.X, el.Center.Y, GetNearText(ref listInfo, el.Center.X, el.Center.Y));
                     }
                     else if (obj.GetType().Name == "DBPoint")
                     {
                         DBPoint el = (DBPoint)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        el.Position = new Point3d(el.Position.X, el.Position.Y, GetNearText(tr, btr, ref listInfo, el.Position.X, el.Position.Y));
+                        el.Position = new Point3d(el.Position.X, el.Position.Y, GetNearText(ref listInfo, el.Position.X, el.Position.Y));
                     }
                     else if (obj.GetType().Name == "Polyline")
                     {
-                        Polyline pl = (Polyline)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
-                        pl.Elevation = 12;
+                        // Do nothing
+                        //Polyline pl = (Polyline)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+                        //pl.Elevation = 12;
                     }
                 }
                 tr.Commit();
-            }
+           }
         }
 
-        private double GetNearText(Transaction tr, BlockTableRecord btr, ref List<double[]> listInfo, double elX, double elY)
+        private double GetNearText(ref List<double[]> listInfo, double elX, double elY)
         {
-            int minI = 0; 
+            int minI = 0;
             double minDistance = 999999999;
             double distance = 0;
             double txtValue = 0;

@@ -5,3 +5,4 @@ C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.MyCommands.reso
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.csproj.GenerateResource.Cache
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.dll
 C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.pdb
+C:\Users\David\Desktop\civil3dextension\setZ\setZ\obj\Debug\setZ.csprojResolveAssemblyReference.cache
