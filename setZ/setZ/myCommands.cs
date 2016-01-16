@@ -6,13 +6,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Interop;
-using Autodesk.Civil.DatabaseServices;
-using Autodesk.Civil.ApplicationServices;
-using Autodesk.AutoCAD.Interop.Common;
 using System.Collections.Generic;
-using System.Windows.Documents;
-using System.Collections;
 using System.Linq;
 
 // This line is not mandatory, but improves loading performances
