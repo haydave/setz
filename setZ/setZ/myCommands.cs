@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 // This line is not mandatory, but improves loading performances
-[assembly: CommandClass(typeof(setZ.MyCommands))]
+[assembly: CommandClass(typeof(setZ.SetZ))]
 
 namespace setZ
 {
@@ -19,7 +19,7 @@ namespace setZ
     // a command is called by the user the first time in the context
     // of a given document. In other words, non static data in this class
     // is implicitly per-document!
-    public class MyCommands
+    public class SetZ
     {
         // The CommandMethod attribute can be applied to any public  member 
         // function of any public class.
@@ -32,16 +32,14 @@ namespace setZ
         // context menu.
 
         // Modal Command with localized name
-        [CommandMethod("MyGroup", "MyCommand", "MyCommandLocal", CommandFlags.Modal)]
-        public void MyCommand() // This method can have any name
+        [CommandMethod("MyGroup", "DetectZet", "DetectZet", CommandFlags.Modal)]
+        public void DetectZet() // This method can have any name
         {
-
-            using (Transaction tr = Application.DocumentManager.MdiActiveDocument.Database.TransactionManager.StartTransaction())
+            Document acDoc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = acDoc.Editor;
+            Database acCurDb = acDoc.Database;
+            using (Transaction tr = acCurDb.TransactionManager.StartTransaction())
             {
-                Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-                // Get the current document and database
-                Document acDoc = Application.DocumentManager.MdiActiveDocument;
-                Database acCurDb = acDoc.Database;
                 double[] textInfo = new double[3];
                 List<double[]> listInfo = new List<double[]>();
                 List<Autodesk.AutoCAD.DatabaseServices.Entity> targets = new List<Autodesk.AutoCAD.DatabaseServices.Entity>();
