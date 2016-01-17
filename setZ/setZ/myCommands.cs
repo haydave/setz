@@ -65,6 +65,7 @@ namespace setZ
                                     textInfo[0] = txtValue;
                                     textInfo[1] = txt.Position.X;
                                     textInfo[2] = txt.Position.Y;
+                                    listInfo.Add(textInfo.ToArray());
                                 }
                             }
                             else if (obj.GetType().Name == "MText")
@@ -75,13 +76,13 @@ namespace setZ
                                     textInfo[0] = txtValue;
                                     textInfo[1] = txt.Location.X;
                                     textInfo[2] = txt.Location.Y;
+                                    listInfo.Add(textInfo.ToArray());
                                 }
                             }
                             else
                             {
                                 targets.Add(obj);
                             }
-                            listInfo.Add(textInfo.ToArray());
                         }
                     }
                 }
